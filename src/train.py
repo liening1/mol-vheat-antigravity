@@ -1,15 +1,19 @@
 import argparse
 import os
+import sys
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from src.data.dataset import MoleculeNetDataset
-from src.models.mol_vheat import MolVHeat
 from tqdm import tqdm
 from sklearn.metrics import roc_auc_score, mean_squared_error
 import numpy as np
 
+# Add project root to sys.path to allow importing from src
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from src.data.dataset import MoleculeNetDataset
+from src.models.mol_vheat import MolVHeat
 from src.utils.transforms import get_transforms
 
 def train(args):
