@@ -25,7 +25,7 @@ wheels/
 *.egg
 
 # Project specific
-data/
+/data/
 checkpoints/
 *.pth
 *.log

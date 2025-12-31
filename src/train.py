@@ -83,7 +83,9 @@ def train(args):
     test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False, num_workers=4)
     
     # Model
-    task_type = 'classification' if args.dataset == 'bbbp' else 'regression'
+    task_type = train_dataset.task_type
+    if task_type == 'multi_classification':
+        task_type = 'classification'  # Handle multi-task as classification for now
     model = MolVHeat(task_type=task_type, dropout=args.dropout).to(device)
     
     # Optimizer with warmup
@@ -210,7 +212,8 @@ def evaluate(model, loader, task_type, device):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Mol-vHeat Training')
-    parser.add_argument('--dataset', type=str, default='esol', choices=['esol', 'bbbp'])
+    parser.add_argument('--dataset', type=str, default='esol', 
+                        choices=['esol', 'bbbp', 'lipophilicity', 'freesolv', 'tox21', 'clintox'])
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--lr', type=float, default=5e-5, help='Learning rate (default: 5e-5)')

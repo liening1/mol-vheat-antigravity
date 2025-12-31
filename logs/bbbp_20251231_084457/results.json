@@ -1,0 +1,14 @@
+{
+  "dataset": "bbbp",
+  "test_metric": 0.6026228673287497,
+  "best_val_metric": 0.7446919596240864,
+  "metric_name": "ROC-AUC",
+  "config": {
+    "dataset": "bbbp",
+    "epochs": 100,
+    "batch_size": 32,
+    "lr": 5e-05,
+    "weight_decay": 0.0001,
+    "warmup_epochs": 5
+  }
+}

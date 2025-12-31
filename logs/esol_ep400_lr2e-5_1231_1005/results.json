@@ -1,0 +1,16 @@
+{
+  "dataset": "esol",
+  "test_metric": 0.9746013633383444,
+  "best_val_metric": 0.9368170157742434,
+  "metric_name": "RMSE",
+  "config": {
+    "dataset": "esol",
+    "epochs": 400,
+    "batch_size": 32,
+    "lr": 2e-05,
+    "weight_decay": 0.0001,
+    "warmup_epochs": 5,
+    "dropout": null,
+    "label_smoothing": 0.0
+  }
+}

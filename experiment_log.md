@@ -1,43 +1,34 @@
 # Mol-vHeat Experiment Log
 
-## Summary Table
+## 🏆 Best Results
 
-| Exp | Dataset | Key Changes | Test Metric | Status |
-|-----|---------|-------------|-------------|--------|
-| 1 | ESOL | Baseline (LR=1e-4) | RMSE: 2.18 | ❌ |
-| 2 | ESOL | LR=5e-5, warmup | **RMSE: 1.37** | ✅ |
-| 3 | BBBP v1 | LR=5e-5, warmup | ROC-AUC: 0.60 | ❌ |
-| 4 | BBBP v2 | + dropout=0.3, smoothing=0.1, wd=5e-4 | ROC-AUC: 0.47 | ❌❌ |
+| Dataset | Best Metric | Config | Status |
+|---------|-------------|--------|--------|
+| **ESOL** | **RMSE: 0.97** | LR=2e-5, 400ep | ✅ Beat baseline (1.15)! |
+| BBBP | ROC-AUC: 0.60 | - | ❌ Needs work |
 
 ---
 
-## Analysis
+## ESOL Experiments
 
-### ESOL (Solubility) ✅
-- **Best Result**: RMSE 1.37 (Exp 2)
-- Close to published baselines (~1.15)
-- Lower LR + warmup helped significantly
-
-### BBBP (Classification) ❌
-- **Best Result**: ROC-AUC 0.60 (Exp 3, v1)
-- **v2 got WORSE** (0.47) despite regularization
-- **Diagnosis**: Too much regularization → underfitting
+| Version | LR | Epochs | Test RMSE | Notes |
+|---------|-----|--------|-----------|-------|
+| v1 | 1e-4 | 100 | 2.18 | Too fast |
+| v2 | 5e-5 | 200 | 1.37 | Good |
+| v3 | 1e-5 | 300 | 1.48 | Too slow |
+| **v4** | **2e-5** | **400** | **0.97** | 🏆 Best! |
 
 ---
 
-## Next Steps for BBBP
+## BBBP Experiments
 
-The current approach is struggling. Consider:
-
-1. **Lower dropout**: Try `--dropout 0.1` (same as regression)
-2. **Remove label smoothing**: `--label_smoothing 0`
-3. **Higher learning rate**: Try `--lr 1e-4`
-4. **Use pretrained backbone**: If vHeat has ImageNet weights
-5. **Different approach**: Graph-based methods may work better for BBBP
+| Version | Settings | ROC-AUC | Notes |
+|---------|----------|---------|-------|
+| v1 | Simple | 0.60 | Best so far |
+| v2 | + regularization | 0.47 | Overfit |
 
 ---
 
-## Files
-- `logs/esol_20251231_083513/` - ESOL best (RMSE: 1.37)
-- `logs/bbbp_20251231_084457/` - BBBP v1 (AUC: 0.60)
-- `logs/bbbp_20251231_091546/` - BBBP v2 (AUC: 0.47)
+## Log Folders
+- `esol_ep400_lr2e-5_1231_1005/` - **Best ESOL (0.97)** 🏆
+- `bbbp_20251231_084457/` - Best BBBP (0.60)

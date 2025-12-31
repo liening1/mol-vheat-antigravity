@@ -1,0 +1,10 @@
+{
+  "dataset": "bbbp",
+  "epochs": 150,
+  "batch_size": 32,
+  "lr": 5e-05,
+  "weight_decay": 0.0005,
+  "warmup_epochs": 5,
+  "dropout": null,
+  "label_smoothing": 0.1
+}

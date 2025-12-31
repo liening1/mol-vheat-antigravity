@@ -1,0 +1,10 @@
+{
+  "dataset": "esol",
+  "epochs": 300,
+  "batch_size": 32,
+  "lr": 1e-05,
+  "weight_decay": 0.0001,
+  "warmup_epochs": 5,
+  "dropout": null,
+  "label_smoothing": 0.0
+}
