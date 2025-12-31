@@ -27,7 +27,9 @@ wheels/
 # Project specific
 data/
 checkpoints/
+*.pth
 *.log
+logs/*/best_model.pth
 
 # OS
 .DS_Store

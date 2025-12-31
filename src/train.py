@@ -20,6 +20,18 @@ from src.models.mol_vheat import MolVHeat
 from src.utils.transforms import get_transforms
 
 
+class LabelSmoothingBCELoss(nn.Module):
+    """Binary Cross Entropy with label smoothing for classification."""
+    def __init__(self, smoothing=0.1):
+        super().__init__()
+        self.smoothing = smoothing
+        
+    def forward(self, pred, target):
+        # Smooth labels: 0 -> smoothing/2, 1 -> 1 - smoothing/2
+        target_smooth = target * (1 - self.smoothing) + 0.5 * self.smoothing
+        return nn.functional.binary_cross_entropy_with_logits(pred, target_smooth)
+
+
 def get_scheduler(optimizer, args, warmup_epochs=5):
     """Cosine annealing with linear warmup."""
     def lr_lambda(epoch):
@@ -66,7 +78,7 @@ def train(args):
     
     # Model
     task_type = 'classification' if args.dataset == 'bbbp' else 'regression'
-    model = MolVHeat(task_type=task_type).to(device)
+    model = MolVHeat(task_type=task_type, dropout=args.dropout).to(device)
     
     # Optimizer with warmup
     optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
@@ -74,7 +86,11 @@ def train(args):
     
     # Loss
     if task_type == 'classification':
-        criterion = nn.BCEWithLogitsLoss()
+        if args.label_smoothing > 0:
+            criterion = LabelSmoothingBCELoss(smoothing=args.label_smoothing)
+            print(f"Using label smoothing: {args.label_smoothing}")
+        else:
+            criterion = nn.BCEWithLogitsLoss()
     else:
         criterion = nn.MSELoss()
         
@@ -192,8 +208,10 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--lr', type=float, default=5e-5, help='Learning rate (default: 5e-5)')
-    parser.add_argument('--weight_decay', type=float, default=1e-4)
+    parser.add_argument('--weight_decay', type=float, default=1e-4, help='Weight decay (use 5e-4 for BBBP)')
     parser.add_argument('--warmup_epochs', type=int, default=5)
+    parser.add_argument('--dropout', type=float, default=None, help='Dropout rate (default: 0.1 for regression, 0.3 for classification)')
+    parser.add_argument('--label_smoothing', type=float, default=0.1, help='Label smoothing for classification (default: 0.1)')
     args = parser.parse_args()
     
     os.makedirs('checkpoints', exist_ok=True)
