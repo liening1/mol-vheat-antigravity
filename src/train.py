@@ -47,9 +47,15 @@ def train(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Using device: {device}")
     
-    # Create log directory
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_dir = f"logs/{args.dataset}_{timestamp}"
+    # Create descriptive log directory name
+    timestamp = datetime.now().strftime("%m%d_%H%M")
+    lr_str = f"{args.lr:.0e}".replace("-0", "-")  # e.g., "5e-5"
+    wd_str = f"wd{args.weight_decay:.0e}".replace("-0", "-") if args.weight_decay != 1e-4 else ""
+    dropout_str = f"_drop{args.dropout}" if args.dropout else ""
+    smooth_str = f"_smooth{args.label_smoothing}" if args.label_smoothing > 0 else ""
+    
+    log_name = f"{args.dataset}_ep{args.epochs}_lr{lr_str}{wd_str}{dropout_str}{smooth_str}_{timestamp}"
+    log_dir = f"logs/{log_name}"
     os.makedirs(log_dir, exist_ok=True)
     
     # Save hyperparameters

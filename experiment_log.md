@@ -1,102 +1,43 @@
 # Mol-vHeat Experiment Log
 
-This document records all experiments, hyperparameters, and results.
-
----
-
 ## Summary Table
 
-| Exp | Dataset | Epochs | LR | Warmup | Test Metric | Baseline | Status |
-|-----|---------|--------|-----|--------|-------------|----------|--------|
-| 1 | ESOL | 100 | 1e-4 | No | RMSE: 2.18 | 1.15 | ❌ Baseline |
-| 2 | ESOL | 200 | 5e-5 | 5 epochs | **RMSE: 1.37** | 1.15 | ✅ Improved |
-| 3 | BBBP | 100 | 5e-5 | 5 epochs | ROC-AUC: 0.60 | 0.85 | ❌ Needs work |
+| Exp | Dataset | Key Changes | Test Metric | Status |
+|-----|---------|-------------|-------------|--------|
+| 1 | ESOL | Baseline (LR=1e-4) | RMSE: 2.18 | ❌ |
+| 2 | ESOL | LR=5e-5, warmup | **RMSE: 1.37** | ✅ |
+| 3 | BBBP v1 | LR=5e-5, warmup | ROC-AUC: 0.60 | ❌ |
+| 4 | BBBP v2 | + dropout=0.3, smoothing=0.1, wd=5e-4 | ROC-AUC: 0.47 | ❌❌ |
 
 ---
 
-## Experiment 1: ESOL Baseline
-**Date:** 2025-12-31 (HPC)  
-**Status:** ❌ Completed - Below baseline
+## Analysis
 
-### Results
-| Metric | Value |
-|--------|-------|
-| **Test RMSE** | **2.18** |
+### ESOL (Solubility) ✅
+- **Best Result**: RMSE 1.37 (Exp 2)
+- Close to published baselines (~1.15)
+- Lower LR + warmup helped significantly
 
-### Notes
-- Default hyperparameters, no warmup
-- Significant gap from target (~1.0)
-
----
-
-## Experiment 2: ESOL Improved ✅
-**Date:** 2025-12-31 (HPC run esol_20251231_083513)  
-**Status:** ✅ Completed - Good improvement!
-
-### Hyperparameters
-| Parameter | Value |
-|-----------|-------|
-| Epochs | 200 |
-| Batch Size | 32 |
-| Learning Rate | 5e-5 |
-| Warmup Epochs | 5 |
-| Weight Decay | 1e-4 |
-
-### Results
-| Metric | Value | Improvement |
-|--------|-------|-------------|
-| Best Val RMSE | 1.27 | - |
-| **Test RMSE** | **1.37** | **37% better** than Exp 1 |
-
-### Training Observations
-- Loss started high (~5.5), dropped around epoch 97-100
-- Model kept improving until epoch 178
-- Final epochs showed convergence (LR near 0)
+### BBBP (Classification) ❌
+- **Best Result**: ROC-AUC 0.60 (Exp 3, v1)
+- **v2 got WORSE** (0.47) despite regularization
+- **Diagnosis**: Too much regularization → underfitting
 
 ---
 
-## Experiment 3: BBBP Classification
-**Date:** 2025-12-31 (HPC run bbbp_20251231_084457)  
-**Status:** ❌ Completed - Below baseline
+## Next Steps for BBBP
 
-### Hyperparameters
-| Parameter | Value |
-|-----------|-------|
-| Epochs | 100 |
-| Batch Size | 32 |
-| Learning Rate | 5e-5 |
-| Warmup Epochs | 5 |
+The current approach is struggling. Consider:
 
-### Results
-| Metric | Value | Target |
-|--------|-------|--------|
-| Best Val ROC-AUC | 0.74 | - |
-| **Test ROC-AUC** | **0.60** | 0.85 |
-
-### Analysis
-- Val-Test gap suggests **overfitting**
-- Best val at epoch 63 (0.74), but test only 0.60
-- Need more regularization or data augmentation
-
----
-
-## Next Steps
-
-### For ESOL
-- [x] Lower LR helped significantly
-- [ ] Try even smaller LR (1e-5) for more epochs
-- [ ] Try larger model depth
-
-### For BBBP (Needs Improvement)
-- [ ] Add dropout to MolVHeat head
-- [ ] Increase weight decay
-- [ ] Use label smoothing
-- [ ] Try more aggressive augmentation
-- [ ] Use scaffold split for better generalization
+1. **Lower dropout**: Try `--dropout 0.1` (same as regression)
+2. **Remove label smoothing**: `--label_smoothing 0`
+3. **Higher learning rate**: Try `--lr 1e-4`
+4. **Use pretrained backbone**: If vHeat has ImageNet weights
+5. **Different approach**: Graph-based methods may work better for BBBP
 
 ---
 
 ## Files
-- `logs/esol_20251231_083513/` - ESOL v2 logs
-- `logs/bbbp_20251231_084457/` - BBBP logs
-- `archive/train_v1_baseline.py` - Original training script
+- `logs/esol_20251231_083513/` - ESOL best (RMSE: 1.37)
+- `logs/bbbp_20251231_084457/` - BBBP v1 (AUC: 0.60)
+- `logs/bbbp_20251231_091546/` - BBBP v2 (AUC: 0.47)
