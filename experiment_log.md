@@ -1,34 +1,31 @@
 # Mol-vHeat Experiment Log
 
-## 🏆 Best Results
+## 🏆 Results Summary
 
-| Dataset | Best Metric | Config | Status |
-|---------|-------------|--------|--------|
-| **ESOL** | **RMSE: 0.97** | LR=2e-5, 400ep | ✅ Beat baseline (1.15)! |
-| BBBP | ROC-AUC: 0.60 | - | ❌ Needs work |
-
----
-
-## ESOL Experiments
-
-| Version | LR | Epochs | Test RMSE | Notes |
-|---------|-----|--------|-----------|-------|
-| v1 | 1e-4 | 100 | 2.18 | Too fast |
-| v2 | 5e-5 | 200 | 1.37 | Good |
-| v3 | 1e-5 | 300 | 1.48 | Too slow |
-| **v4** | **2e-5** | **400** | **0.97** | 🏆 Best! |
+| Dataset | Metric | Your Result | Baseline | Status |
+|---------|--------|-------------|----------|--------|
+| **ESOL** | RMSE ↓ | **0.97** | 1.15 | ✅ Beat baseline! |
+| Lipophilicity | RMSE ↓ | 1.12 | ~0.7 | ⚠️ OK |
+| FreeSolv | RMSE ↓ | 1.76 | ~1.2 | ❌ Needs work |
+| BBBP | ROC-AUC ↑ | 0.60 | 0.85 | ❌ Needs work |
+| Tox21 | ROC-AUC ↑ | - | ~0.75 | ⏳ Pending |
+| ClinTox | ROC-AUC ↑ | - | ~0.90 | ⏳ Pending |
 
 ---
 
-## BBBP Experiments
+## Best Configs
 
-| Version | Settings | ROC-AUC | Notes |
-|---------|----------|---------|-------|
-| v1 | Simple | 0.60 | Best so far |
-| v2 | + regularization | 0.47 | Overfit |
+| Dataset | Best Config | Best Result |
+|---------|-------------|-------------|
+| ESOL | `--epochs 400 --lr 2e-5` | **RMSE 0.97** 🏆 |
+| Lipophilicity | `--epochs 200 --lr 2e-5` | RMSE 1.12 |
+| FreeSolv | `--epochs 300 --lr 2e-5` | RMSE 1.76 |
+| BBBP | `--epochs 100 --lr 5e-5` | AUC 0.60 |
 
 ---
 
-## Log Folders
-- `esol_ep400_lr2e-5_1231_1005/` - **Best ESOL (0.97)** 🏆
-- `bbbp_20251231_084457/` - Best BBBP (0.60)
+## Key Findings
+- ✅ ESOL: vHeat works well for water solubility prediction
+- ⚠️ Lipophilicity: Reasonable but room for improvement
+- ❌ FreeSolv: Small dataset (643) causes issues
+- ❌ BBBP: Classification tasks need more work
