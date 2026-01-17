@@ -186,6 +186,7 @@ Baseline          ████████████████████�
 |----------|-------------|-----------------|
 | 🔴 High | Higher image resolution (224 → 384) | +10-15% |
 | 🔴 High | Pre-training on larger molecular dataset | +15-20% |
+| 🟡 Medium | Chemistry-aware frequency modeling (element/bond-conditioned FVEs or multi-channel element/bond density maps) | +5-15% |
 | 🟡 Medium | Add attention mechanisms | +5-10% |
 | 🟡 Medium | Multi-scale image features | +5-10% |
 | 🟢 Low | Ensemble with GNN features | +10-15% |
