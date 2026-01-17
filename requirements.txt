@@ -7,3 +7,6 @@ scikit-learn
 timm
 einops
 fvcore
+requests
+scipy
+tqdm
