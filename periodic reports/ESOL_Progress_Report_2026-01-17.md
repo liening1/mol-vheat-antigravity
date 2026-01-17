@@ -99,6 +99,19 @@ Unlike traditional graph neural networks (GNNs), Mol-vHeat:
 | Outlier Ratio (>2σ) | 5.26% |
 | Error Std | 0.9916 |
 
+#### Official MoleculeNet Evaluation (Scaffold Split) 🏆
+
+> [!IMPORTANT]
+> This is the **official benchmark result** using scaffold split, directly comparable to published GNN methods.
+
+| Metric | Value |
+|--------|-------|
+| **Test RMSE** | **0.7577** |
+| Test MAE | 0.6052 |
+| Test R² | 0.8538 |
+| Pearson r | 0.9261 |
+| Train/Val/Test | 904/113/111 |
+
 ---
 
 ## 3. Comparison with State-of-the-Art
@@ -114,10 +127,11 @@ Unlike traditional graph neural networks (GNNs), Mol-vHeat:
 | UG-RNN | Graph RNN | 0.58 | 2023 | ResearchGate |
 | Multi-task Transformer | Transformer | 0.61 | 2024 | ResearchGate |
 | AttentiveFP | Attentive GNN | 0.61 | 2023 | NIH |
-| **Mol-vHeat CV (Ours)** | **Vision-based** | **0.70 ± 0.04** | 2026 | This work |
+| Mol-vHeat CV (Ours) | Vision-based | 0.70 ± 0.04 | 2026 | This work |
 | TChemGNN | GNN | 0.73 ± 0.08 | 2025 | ACS |
+| **Mol-vHeat Scaffold (Ours)** | **Vision-based** | **0.76** | 2026 | This work 🏆 |
 | GCN (MoleculeNet) | GCN | 0.885 ± 0.029 | 2018 | GitHub |
-| Mol-vHeat Test (Ours) | Vision-based | 0.99 | 2026 | This work |
+| Mol-vHeat Random (Ours) | Vision-based | 0.99 | 2026 | This work |
 | Baseline | - | 1.15 | - | - |
 
 ### 3.2 Performance Analysis

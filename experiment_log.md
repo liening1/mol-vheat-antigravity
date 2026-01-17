@@ -34,9 +34,25 @@
 
 ## Experiment History
 
-### Jan 17, 2026 - ESOL Comprehensive Evaluation
+### Jan 17, 2026 - Official MoleculeNet Evaluation (Scaffold Split) 🏆
 
-**Evaluation Run:** New HPC with fresh training (epochs=400, lr=2e-5)
+**Official scaffold split - directly comparable to published GNN benchmarks**
+
+| Metric | Value |
+|--------|-------|
+| **Test RMSE** | **0.7577** |
+| Test MAE | 0.6052 |
+| Test R² | 0.8538 |
+| Pearson r | 0.9261 |
+| Train/Val/Test | 904/113/111 |
+
+**Comparison:** Beats GCN (0.89), close to TChemGNN (0.73)
+
+**File:** `periodic reports/evaluation_esol/official_esol_scaffold.json`
+
+---
+
+### Jan 17, 2026 - Comprehensive Evaluation (Random Split)
 
 | Metric | Value |
 |--------|-------|
@@ -50,8 +66,6 @@
 | Memory | 572 MB |
 
 **CV Fold Results:** 0.730, 0.662, 0.741, 0.736, 0.650
-
-**Key Insight:** CV RMSE (0.70) is competitive with GNN methods like TChemGNN (0.73)
 
 **Files:**
 - `periodic reports/evaluation_esol/evaluation_esol_20260117_205711.json`
