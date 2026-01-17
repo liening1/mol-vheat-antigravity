@@ -14,6 +14,18 @@ import multiprocessing as mp
 from datetime import datetime
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
+import torch
+
+
+def _json_default(obj):
+    """JSON serializer for numpy/torch types."""
+    if isinstance(obj, (np.integer, np.floating)):
+        return obj.item()
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    if isinstance(obj, torch.Tensor):
+        return obj.detach().cpu().tolist()
+    return str(obj)
 
 # Add project root to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -45,7 +57,7 @@ class BenchmarkRunner:
             # Save individual result
             output_path = os.path.join(self.output_dir, f"{name}_{dataset}.json")
             with open(output_path, 'w') as f:
-                json.dump(results, f, indent=2)
+                json.dump(results, f, indent=2, default=_json_default)
             
             print(f"[{name}] ✓ Completed")
             return results
@@ -171,7 +183,7 @@ class BenchmarkRunner:
         # Save results
         output_path = os.path.join(self.output_dir, f"cv_{dataset}_{n_folds}fold.json")
         with open(output_path, 'w') as f:
-            json.dump(cv_results, f, indent=2)
+            json.dump(cv_results, f, indent=2, default=_json_default)
         
         return cv_results
     
@@ -204,7 +216,7 @@ class BenchmarkRunner:
         # Save summary
         summary_path = os.path.join(self.output_dir, f"summary_{self.timestamp}.json")
         with open(summary_path, 'w') as f:
-            json.dump(summary, f, indent=2)
+            json.dump(summary, f, indent=2, default=_json_default)
         
         return summary
     

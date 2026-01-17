@@ -58,7 +58,8 @@ class ModelEvaluator:
         
         # Load model
         self.model = MolVHeat(task_type=self.task_type).to(self.device)
-        self.model.load_state_dict(torch.load(model_path, weights_only=True, map_location=self.device))
+        state_dict = torch.load(model_path, weights_only=True, map_location=self.device)
+        self.model.load_state_dict(state_dict)
         self.model.eval()
         
         # Results storage
@@ -325,9 +326,21 @@ class ModelEvaluator:
         os.makedirs(output_dir, exist_ok=True)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_path = os.path.join(output_dir, f"evaluation_{self.dataset_name}_{timestamp}.json")
+
+        def _json_default(obj):
+            # NumPy scalars/arrays
+            if isinstance(obj, (np.integer, np.floating)):
+                return obj.item()
+            if isinstance(obj, np.ndarray):
+                return obj.tolist()
+            # Torch tensors
+            if isinstance(obj, torch.Tensor):
+                return obj.detach().cpu().tolist()
+            # Fallback
+            return str(obj)
         
         with open(output_path, 'w') as f:
-            json.dump(self.results, f, indent=2)
+            json.dump(self.results, f, indent=2, default=_json_default)
         
         print(f"Results saved to: {output_path}")
         return output_path
