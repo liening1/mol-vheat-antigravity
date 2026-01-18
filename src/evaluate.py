@@ -35,16 +35,47 @@ from src.models.mol_vheat import MolVHeat
 from src.utils.transforms import get_transforms
 
 
+def get_device_info():
+    """Get detailed GPU/CPU device information."""
+    info = {
+        'device_type': 'cpu',
+        'device_name': 'CPU',
+        'cuda_version': None,
+        'gpu_memory_total': None
+    }
+    
+    if torch.cuda.is_available():
+        info['device_type'] = 'cuda'
+        info['device_name'] = torch.cuda.get_device_name(0)
+        info['cuda_version'] = torch.version.cuda
+        info['gpu_memory_total'] = f"{torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB"
+    
+    return info
+
+
+def print_device_info():
+    """Print device information at job end."""
+    info = get_device_info()
+    print(f"\n{'='*50}")
+    print("Hardware Information")
+    print(f"{'='*50}")
+    print(f"   Device: {info['device_name']}")
+    if info['cuda_version']:
+        print(f"   CUDA Version: {info['cuda_version']}")
+        print(f"   GPU Memory: {info['gpu_memory_total']}")
+    print(f"{'='*50}")
+
+
 class ModelEvaluator:
     """Comprehensive model evaluator for Mol-vHeat."""
     
-    def __init__(self, model_path, dataset_name, device=None):
+    def __init__(self, model_path, dataset_name, device=None, background: str = 'none'):
         self.model_path = model_path
         self.dataset_name = dataset_name
         self.device = device or torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # Load dataset
-        self.transform = get_transforms('val')
+        self.transform = get_transforms('val', background=background)
         self.test_dataset = MoleculeNetDataset(
             dataset_name, split='test', root='data', transform=self.transform
         )
@@ -68,7 +99,8 @@ class ModelEvaluator:
             'dataset': dataset_name,
             'task_type': self.task_type,
             'timestamp': datetime.now().isoformat(),
-            'device': str(self.device)
+            'device': str(self.device),
+            'hardware_info': get_device_info()
         }
         
     def count_parameters(self):
@@ -352,13 +384,23 @@ def main():
                         help='Path to model checkpoint')
     parser.add_argument('--dataset', type=str, default='esol',
                         choices=['esol', 'bbbp', 'lipophilicity', 'freesolv', 'tox21', 'clintox'])
+    parser.add_argument(
+        '--background',
+        type=str,
+        default='none',
+        choices=['none', 'mean', 'mean_jitter'],
+        help="Background handling (must match training): 'none', 'mean', or 'mean_jitter' (val/test typically use 'mean').",
+    )
     parser.add_argument('--output', type=str, default='evaluation_results',
                         help='Output directory for results')
     args = parser.parse_args()
     
-    evaluator = ModelEvaluator(args.model, args.dataset)
+    evaluator = ModelEvaluator(args.model, args.dataset, background=args.background)
     results = evaluator.run_full_evaluation()
     evaluator.save_results(args.output)
+    
+    # Print hardware info at job end
+    print_device_info()
     
     return results
 

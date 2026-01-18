@@ -20,6 +20,37 @@ from src.models.mol_vheat import MolVHeat
 from src.utils.transforms import get_transforms
 
 
+def get_device_info():
+    """Get detailed GPU/CPU device information."""
+    info = {
+        'device_type': 'cpu',
+        'device_name': 'CPU',
+        'cuda_version': None,
+        'gpu_memory_total': None
+    }
+    
+    if torch.cuda.is_available():
+        info['device_type'] = 'cuda'
+        info['device_name'] = torch.cuda.get_device_name(0)
+        info['cuda_version'] = torch.version.cuda
+        info['gpu_memory_total'] = f"{torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB"
+    
+    return info
+
+
+def print_device_info():
+    """Print device information at job end."""
+    info = get_device_info()
+    print(f"\n{'='*50}")
+    print("Hardware Information")
+    print(f"{'='*50}")
+    print(f"   Device: {info['device_name']}")
+    if info['cuda_version']:
+        print(f"   CUDA Version: {info['cuda_version']}")
+        print(f"   GPU Memory: {info['gpu_memory_total']}")
+    print(f"{'='*50}")
+
+
 class LabelSmoothingBCELoss(nn.Module):
     """Binary Cross Entropy with label smoothing for classification."""
     def __init__(self, smoothing=0.1):
@@ -241,3 +272,6 @@ if __name__ == '__main__':
     os.makedirs('checkpoints', exist_ok=True)
     os.makedirs('logs', exist_ok=True)
     train(args)
+    
+    # Print hardware info at job end
+    print_device_info()
