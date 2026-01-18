@@ -73,6 +73,23 @@
 
 ---
 
+### Jan 18, 2026 - Background Ablation Test
+
+**Question:** Does replacing white background with ImageNet mean improve results?
+
+| Background | Val RMSE | Test RMSE |
+|------------|----------|-----------|
+| `none` (white) | 1.29 | ~1.3 |
+| `mean` (ImageNet) | 1.28 | 1.54 |
+
+**Result:** `background='none'` generalizes better. Keep default.
+
+> **Note:** 100 epochs may be too short to see the full effect. Longer training (400 epochs) might show a clearer difference between `mean` and `none`. Consider revisiting this ablation with more epochs.
+
+**Files:** `experiments/background_ablation_20260118_121446/`
+
+---
+
 ### Dec 31, 2025 - Initial ESOL Training
 
 Best result achieved with epochs=400, lr=2e-5: **RMSE 0.97**
