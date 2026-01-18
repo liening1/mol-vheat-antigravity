@@ -85,6 +85,8 @@ Unlike traditional graph neural networks (GNNs), Mol-vHeat:
 > The CV RMSE (0.70) is significantly better than test RMSE (0.99), suggesting strong generalization capability.
 
 #### Computational Efficiency
+*Tested on NVIDIA A16 GPU*
+
 | Metric | Value |
 |--------|-------|
 | **Inference Time** | 20.0 ms/sample |
