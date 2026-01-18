@@ -93,6 +93,19 @@ Unlike traditional graph neural networks (GNNs), Mol-vHeat:
 | **Model Size** | 136.4 MB |
 | **Estimated GFLOPs** | 5.7 |
 
+#### Efficiency Comparison with Other Models
+
+| Model | Parameters | Inference | Notes |
+|-------|------------|-----------|-------|
+| **Mol-vHeat (Ours)** | 35.7M | ~20 ms | Vision backbone (vHeat) |
+| GCN | ~50K-200K | ~1-5 ms | Lightweight graph model |
+| AttentiveFP | ~500K-2M | ~5-10 ms | Graph attention network |
+| MolGraph-xLSTM | ~1-5M | ~10-20 ms | Graph + LSTM |
+| MolGPS (large) | 1-3B | >100 ms | Foundational model |
+
+> [!NOTE]
+> GNN models are typically much smaller (100K-2M parameters) than vision models. Mol-vHeat trades model size for the simplicity of not requiring graph construction. Exact inference times vary by hardware; estimates based on literature.
+
 #### Error Analysis
 | Metric | Value |
 |--------|-------|
