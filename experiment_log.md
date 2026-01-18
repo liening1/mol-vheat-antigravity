@@ -73,18 +73,18 @@
 
 ---
 
-### Jan 18, 2026 - Background Ablation Test
+### Jan 18, 2026 - Background Ablation Experiment
 
-**Question:** Does replacing white background with ImageNet mean improve results?
+**Goal:** Test if replacing white background with ImageNet mean improves results.
 
-| Background | Val RMSE | Test RMSE |
-|------------|----------|-----------|
-| `none` (white) | 1.29 | ~1.3 |
-| `mean` (ImageNet) | 1.28 | 1.54 |
+| Background | Best Val RMSE | Test RMSE |
+|------------|---------------|-----------|
+| `none` (white) | 1.2865 | ~1.3 |
+| `mean` (ImageNet) | 1.2766 | 1.5404 |
 
-**Result:** `background='none'` generalizes better. Keep default.
+**Result:** `background='none'` has better test performance. Keep default white background.
 
-> **Note:** 100 epochs may be too short to see the full effect. Longer training (400 epochs) might show a clearer difference between `mean` and `none`. Consider revisiting this ablation with more epochs.
+**Note:** This was a quick 100-epoch test. Longer training (400 epochs) might show more significant differences between the two approaches.
 
 **Files:** `experiments/background_ablation_20260118_121446/`
 
