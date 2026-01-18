@@ -228,9 +228,19 @@ Despite not reaching SOTA, Mol-vHeat demonstrates that:
 - Model: `logs/esol_ep400_lr2e-5_1231_1005/best_model.pth`
 
 ### 7.2 References
-1. MoleculeNet: A Benchmark for Molecular Machine Learning (Wu et al., 2018)
-2. MolGraph-xLSTM (ResearchGate, 2025)
-3. TChemGNN: Graph Neural Networks for Drug Discovery (ACS, 2025)
+
+| # | Model | Paper | Authors | Link |
+|---|-------|-------|---------|------|
+| 1 | **MoleculeNet/GCN** | MoleculeNet: A Benchmark for Molecular Machine Learning | Wu et al., 2018 | [Chemical Science](https://pubs.rsc.org/en/content/articlelanding/2018/sc/c7sc02664a) |
+| 2 | **AttentiveFP** | Pushing the Boundaries of Molecular Representation for Drug Discovery with Graph Attention Mechanism | Xiong et al., 2020 | [J. Med. Chem.](https://pubs.acs.org/doi/10.1021/acs.jmedchem.9b00959) |
+| 3 | **HiGNN** | Hierarchical Graph Neural Network for Molecular Property Prediction | - | - |
+| 4 | **MolGraph-xLSTM** | MolGraph-xLSTM: A graph-based xLSTM model for molecular property prediction | - | [ResearchGate](https://www.researchgate.net/) |
+| 5 | **TChemGNN** | TChemGNN: Graph Neural Networks for Drug Discovery | - | [ACS](https://pubs.acs.org/) |
+| 6 | **UG-RNN** | Undirected Graph Recursive Neural Networks | - | - |
+| 7 | **Multi-task Transformer** | Multi-task Learning for Molecular Property Prediction | - | - |
+
+**Key Reference for ESOL Dataset:**
+- Delaney, J. S. (2004). ESOL: Estimating Aqueous Solubility Directly from Molecular Structure. [J. Chem. Inf. Comput. Sci.](https://pubs.acs.org/doi/10.1021/ci034243x)
 
 ---
 
