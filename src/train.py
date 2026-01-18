@@ -168,7 +168,7 @@ def train(args):
     print(f"\n{'='*50}")
     print("Evaluating on test set...")
     state_dict = torch.load(f"checkpoints/{args.dataset}_best.pth", weights_only=True)
-    model.load_compatible_state_dict(state_dict, strict=True)
+    model.load_state_dict(state_dict)
     test_metric = evaluate(model, test_loader, task_type, device)
     
     metric_name = "ROC-AUC" if task_type == 'classification' else "RMSE"
