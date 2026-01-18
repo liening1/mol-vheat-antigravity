@@ -55,7 +55,12 @@ def train(args):
     smooth_str = f"_smooth{args.label_smoothing}" if args.label_smoothing > 0 else ""
     
     log_name = f"{args.dataset}_ep{args.epochs}_lr{lr_str}{wd_str}{dropout_str}{smooth_str}_{timestamp}"
-    log_dir = f"logs/{log_name}"
+    
+    # Use custom output_dir if specified, otherwise default to logs/
+    if args.output_dir:
+        log_dir = args.output_dir
+    else:
+        log_dir = f"logs/{log_name}"
     os.makedirs(log_dir, exist_ok=True)
     
     # Save hyperparameters
@@ -68,8 +73,9 @@ def train(args):
     csv_writer.writerow(['epoch', 'train_loss', 'val_metric', 'lr', 'is_best'])
     
     # Dataset
-    train_transform = get_transforms('train')
-    val_transform = get_transforms('val')
+    val_bg = 'mean' if args.background == 'mean_jitter' else args.background
+    train_transform = get_transforms('train', background=args.background)
+    val_transform = get_transforms('val', background=val_bg)
     
     train_dataset = MoleculeNetDataset(args.dataset, split='train', root='data', transform=train_transform)
     val_dataset = MoleculeNetDataset(args.dataset, split='val', root='data', transform=val_transform)
@@ -161,7 +167,8 @@ def train(args):
     # Test
     print(f"\n{'='*50}")
     print("Evaluating on test set...")
-    model.load_state_dict(torch.load(f"checkpoints/{args.dataset}_best.pth", weights_only=True))
+    state_dict = torch.load(f"checkpoints/{args.dataset}_best.pth", weights_only=True)
+    model.load_compatible_state_dict(state_dict, strict=True)
     test_metric = evaluate(model, test_loader, task_type, device)
     
     metric_name = "ROC-AUC" if task_type == 'classification' else "RMSE"
@@ -217,10 +224,18 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--lr', type=float, default=5e-5, help='Learning rate (default: 5e-5)')
+    parser.add_argument(
+        '--background',
+        type=str,
+        default='none',
+        choices=['none', 'mean', 'mean_jitter'],
+        help="Background handling: 'none' keeps RDKit white background; 'mean' fills with ImageNet mean; 'mean_jitter' adds slight jitter (recommended for train).",
+    )
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='Weight decay (use 5e-4 for BBBP)')
     parser.add_argument('--warmup_epochs', type=int, default=5)
     parser.add_argument('--dropout', type=float, default=None, help='Dropout rate (default: 0.1 for regression, 0.3 for classification)')
     parser.add_argument('--label_smoothing', type=float, default=0.1, help='Label smoothing for classification (default: 0.1)')
+    parser.add_argument('--output_dir', type=str, default=None, help='Custom output directory for logs and checkpoints')
     args = parser.parse_args()
     
     os.makedirs('checkpoints', exist_ok=True)
