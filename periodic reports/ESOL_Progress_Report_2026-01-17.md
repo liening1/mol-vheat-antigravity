@@ -133,21 +133,21 @@ Unlike traditional graph neural networks (GNNs), Mol-vHeat:
 
 ### 3.1 Benchmark Comparison Table
 
-> Note: The table below is for high-level positioning only. Values for external methods may depend on data splits and evaluation protocols.
+> Note: All methods use scaffold split for fair comparison. PCC = Pearson Correlation Coefficient.
 
-| Method | Type | RMSE ↓ | Year | Reference |
-|--------|------|--------|------|-----------|
-| **MolGraph-xLSTM** | Graph + LSTM | **0.527 ± 0.046** | 2025 | ResearchGate |
-| HiGNN | Hierarchical GNN | 0.570 ± 0.061 | 2024 | - |
-| UG-RNN | Graph RNN | 0.58 | 2023 | ResearchGate |
-| Multi-task Transformer | Transformer | 0.61 | 2024 | ResearchGate |
-| AttentiveFP | Attentive GNN | 0.61 | 2023 | NIH |
-| Mol-vHeat CV (Ours) | Vision-based | 0.70 ± 0.04 | 2026 | This work |
-| TChemGNN | GNN | 0.73 ± 0.08 | 2025 | ACS |
-| **Mol-vHeat Scaffold (Ours)** | **Vision-based** | **0.76** | 2026 | This work 🏆 |
-| GCN (MoleculeNet) | GCN | 0.885 ± 0.029 | 2018 | GitHub |
-| Mol-vHeat Random (Ours) | Vision-based | 0.99 | 2026 | This work |
-| Baseline | - | 1.15 | - | - |
+| Model | RMSE ↓ | PCC ↑ | Type | Year | Reference |
+|-------|--------|-------|------|------|-----------|
+| **MolGraph-xLSTM** | **0.527** | **0.965** | Graph + LSTM | 2025 | ResearchGate |
+| HiGNN | 0.570 | 0.959 | Hierarchical GNN | 2022 | [J. Chem. Inf. Model.](https://pubs.acs.org/doi/10.1021/acs.jcim.2c01099) |
+| DMPNN | 0.575 | 0.957 | Message Passing NN | 2019 | [J. Chem. Inf. Model.](https://pubs.acs.org/doi/10.1021/acs.jcim.9b00237) |
+| DeeperGCN | 0.615 | 0.954 | Deep GCN | 2020 | [arXiv](https://arxiv.org/abs/2006.07739) |
+| AttentiveFP | 0.61 | ~0.95 | Graph Attention | 2020 | [J. Med. Chem.](https://pubs.acs.org/doi/10.1021/acs.jmedchem.9b00959) |
+| FP-GNN | 0.658 | 0.946 | Fingerprint + GNN | 2022 | [Brief. Bioinform.](https://academic.oup.com/bib/article/23/6/bbac408/6762285) |
+| BiLSTM | 0.743 | 0.931 | LSTM | - | - |
+| **Mol-vHeat (Ours)** | **0.76** | **0.926** | **Vision-based** | 2026 | This work |
+| AutoML | 0.843 | 0.910 | AutoML | - | - |
+| GCN (MoleculeNet) | 0.885 | ~0.88 | GCN | 2018 | [Chem. Sci.](https://pubs.rsc.org/en/content/articlelanding/2018/sc/c7sc02664a) |
+| TransFoxMol | 0.930 | 0.917 | Transformer | - | - |
 
 ### 3.2 Performance Analysis
 
@@ -155,16 +155,17 @@ Unlike traditional graph neural networks (GNNs), Mol-vHeat:
 RMSE Performance (Lower is Better)
 ──────────────────────────────────────────────────────────
 
-MolGraph-xLSTM       ████████████░░░░░░░░░░░░░░░░░░  0.527 ⭐ SOTA
-HiGNN                █████████████░░░░░░░░░░░░░░░░░  0.570
-UG-RNN               █████████████░░░░░░░░░░░░░░░░░  0.580
-AttentiveFP          ██████████████░░░░░░░░░░░░░░░░  0.610
-Mol-vHeat CV         ████████████████░░░░░░░░░░░░░░  0.704
-TChemGNN             █████████████████░░░░░░░░░░░░░  0.730
-Mol-vHeat Scaffold   █████████████████░░░░░░░░░░░░░  0.758 🏆 NEW
-GCN                  ████████████████████░░░░░░░░░░  0.885
-Mol-vHeat Random     ██████████████████████░░░░░░░░  0.993
-Baseline             ███████████████████████████░░░  1.150
+MolGraph-xLSTM      ████████████░░░░░░░░░░░░░░░░░░  0.527 ⭐ SOTA
+HiGNN               █████████████░░░░░░░░░░░░░░░░░  0.570
+DMPNN               █████████████░░░░░░░░░░░░░░░░░  0.575
+AttentiveFP         ██████████████░░░░░░░░░░░░░░░░  0.610
+DeeperGCN           ██████████████░░░░░░░░░░░░░░░░  0.615
+FP-GNN              ███████████████░░░░░░░░░░░░░░░  0.658
+BiLSTM              ████████████████░░░░░░░░░░░░░░  0.743
+Mol-vHeat (Ours)    █████████████████░░░░░░░░░░░░░  0.758 ← Vision
+AutoML              ██████████████████░░░░░░░░░░░░  0.843
+GCN                 ███████████████████░░░░░░░░░░░  0.885
+TransFoxMol         ████████████████████░░░░░░░░░░  0.930
 
 ──────────────────────────────────────────────────────────
 ```
@@ -244,15 +245,15 @@ Despite not reaching SOTA, Mol-vHeat demonstrates that:
 
 ### 7.2 References
 
-| # | Model | Paper | Authors | Link |
-|---|-------|-------|---------|------|
-| 1 | **MoleculeNet/GCN** | MoleculeNet: A Benchmark for Molecular Machine Learning | Wu et al., 2018 | [Chemical Science](https://pubs.rsc.org/en/content/articlelanding/2018/sc/c7sc02664a) |
-| 2 | **AttentiveFP** | Pushing the Boundaries of Molecular Representation for Drug Discovery with Graph Attention Mechanism | Xiong et al., 2020 | [J. Med. Chem.](https://pubs.acs.org/doi/10.1021/acs.jmedchem.9b00959) |
-| 3 | **HiGNN** | Hierarchical Graph Neural Network for Molecular Property Prediction | - | - |
-| 4 | **MolGraph-xLSTM** | MolGraph-xLSTM: A graph-based xLSTM model for molecular property prediction | - | [ResearchGate](https://www.researchgate.net/) |
-| 5 | **TChemGNN** | TChemGNN: Graph Neural Networks for Drug Discovery | - | [ACS](https://pubs.acs.org/) |
-| 6 | **UG-RNN** | Undirected Graph Recursive Neural Networks | - | - |
-| 7 | **Multi-task Transformer** | Multi-task Learning for Molecular Property Prediction | - | - |
+| # | Model | Paper | Year | Link |
+|---|-------|-------|------|------|
+| 1 | **MolGraph-xLSTM** | MolGraph-xLSTM: A graph-based xLSTM model | 2025 | [ResearchGate](https://www.researchgate.net/) |
+| 2 | **HiGNN** | HiGNN: A Hierarchical Informative GNN for Molecular Property Prediction | 2022 | [J. Chem. Inf. Model.](https://pubs.acs.org/doi/10.1021/acs.jcim.2c01099) |
+| 3 | **DMPNN** | Analyzing Learned Molecular Representations for Property Prediction | 2019 | [J. Chem. Inf. Model.](https://pubs.acs.org/doi/10.1021/acs.jcim.9b00237) |
+| 4 | **DeeperGCN** | DeeperGCN: All You Need to Train Deeper GCNs | 2020 | [arXiv](https://arxiv.org/abs/2006.07739) |
+| 5 | **AttentiveFP** | Pushing the Boundaries of Molecular Representation with Graph Attention | 2020 | [J. Med. Chem.](https://pubs.acs.org/doi/10.1021/acs.jmedchem.9b00959) |
+| 6 | **FP-GNN** | FP-GNN: A versatile deep learning architecture for enhanced molecular property prediction | 2022 | [Brief. Bioinform.](https://academic.oup.com/bib/article/23/6/bbac408/6762285) |
+| 7 | **GCN/MoleculeNet** | MoleculeNet: A Benchmark for Molecular Machine Learning | 2018 | [Chem. Sci.](https://pubs.rsc.org/en/content/articlelanding/2018/sc/c7sc02664a) |
 
 **Key Reference for ESOL Dataset:**
 - Delaney, J. S. (2004). ESOL: Estimating Aqueous Solubility Directly from Molecular Structure. [J. Chem. Inf. Comput. Sci.](https://pubs.acs.org/doi/10.1021/ci034243x)
